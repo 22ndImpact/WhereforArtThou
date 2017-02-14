@@ -1,0 +1,4 @@
+sceneSetups:
+- path: Assets/Scenes/Sce_GameplayScreen.unity
+  isLoaded: 1
+  isActive: 1
