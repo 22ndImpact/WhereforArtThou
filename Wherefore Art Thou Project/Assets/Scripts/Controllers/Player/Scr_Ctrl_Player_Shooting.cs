@@ -5,7 +5,6 @@ using UnityEngine;
 public class Scr_Ctrl_Player_Shooting : MonoBehaviour
 {
     #region Variables
-    
     public enum ShootingState
     {
         Ready,
@@ -14,19 +13,21 @@ public class Scr_Ctrl_Player_Shooting : MonoBehaviour
     }
 
     public ShootingState shootingState = ShootingState.Ready;
-
     public float reloadTime;
     public float reloadTimer;
-
     public float currentCharge;
     public float minimumCharge;
     public float maximumCharge;
     public float chargeRate;
-
+    public float currentChargePercentage;
     #endregion
 
     #region Object References
     Scr_Ctrl_Player playerController;
+    public Scr_Ctrl_Reticle reticle;
+    public GameObject projectilePrefab;
+
+
     #endregion
 
     void Awake()
@@ -34,6 +35,12 @@ public class Scr_Ctrl_Player_Shooting : MonoBehaviour
         #region Controller Component Initialization
         playerController = GetComponent<Scr_Ctrl_Player>();
         #endregion
+
+        // Records the starting scale of the targeting reticle
+        reticle.minReticleXScale = reticle.gameObject.transform.localScale.x;
+
+        // Sets the current charge to the minimum charge
+        currentCharge = minimumCharge;
     }
 
     public void UpdateShootingState()
@@ -69,15 +76,20 @@ public class Scr_Ctrl_Player_Shooting : MonoBehaviour
                 UpdateReloadTimer();
                 break;
         }
+
+        UpdateReticle();
+
+
     }
 
     void Shoot()
     {
+        //Creates the new projectile object
+        GameObject newProjectile = Instantiate<GameObject>(projectilePrefab);
+        //Sets the new projectiles initial values
+        newProjectile.GetComponent<Scr_Ctrl_Projectile>().Initialization(reticle.transform.position, this.gameObject.transform.rotation, reticle.meshRenderer.material.color, currentChargePercentage, playerController.polarity);
 
-
-
-
-        //Sets the reload time
+        //Resets the reload time
         reloadTimer = reloadTime;
 
         //Reset Charge
@@ -89,17 +101,38 @@ public class Scr_Ctrl_Player_Shooting : MonoBehaviour
 
     void UpdateReloadTimer()
     {
-        // Reduce timer
-        reloadTimer =  Mathf.Clamp(reloadTimer - Time.deltaTime, 0, Mathf.Infinity);
-
-        if(reloadTimer <= 0)
+        if (reloadTimer > 0)
         {
+            // Reduce timer
+            reloadTimer = Mathf.Clamp(reloadTimer - Time.deltaTime, 0, Mathf.Infinity);
+            //Changes the colour of the reticle based reload time percentage
+            reticle.meshRenderer.material.color = Color.Lerp(reticle.minReloadColour, reticle.maxReloadColour, reloadTimer / reloadTime);
+        }
+        else
+        {
+            //Change the state to shooting
             shootingState = ShootingState.Ready;
         }
     }
 
     void UpdateCharge()
     {
+        //Increases the current charge based on charge rate
         currentCharge = Mathf.Clamp(currentCharge + (chargeRate * Time.deltaTime), minimumCharge, maximumCharge);
+
+        //Changes the colour of the reticle based charge percentage
+        reticle.meshRenderer.material.color = Color.Lerp(reticle.minChargeColour, reticle.maxChargeColour, currentChargePercentage);
+    }
+
+    void UpdateReticle()
+    {
+        //Determines the current percent charged
+        currentChargePercentage = (currentCharge - minimumCharge) / (maximumCharge - minimumCharge);
+        //Calculating the current reticle scale based off charge percent
+        reticle.currentReticleXScale = reticle.minReticleXScale + ((reticle.maxReticleXScale - reticle.minReticleXScale) * currentChargePercentage);
+
+
+        //Applying the calculated scale to the reticle transform
+        reticle.gameObject.transform.localScale = new Vector3(reticle.currentReticleXScale, reticle.gameObject.transform.localScale.y, reticle.transform.localScale.z);
     }
 }

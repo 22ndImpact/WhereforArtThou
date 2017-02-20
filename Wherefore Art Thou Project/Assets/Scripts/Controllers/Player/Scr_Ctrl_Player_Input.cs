@@ -22,6 +22,11 @@ public class Scr_Ctrl_Player_Input : MonoBehaviour
     // Returns the state of the shooting button
     public bool getShootingInput()
     {
-        return Input.GetKey(KeyCode.Space);
+        return Input.GetMouseButton(0);
+    }
+
+    public bool getPolaritySwitchDown()
+    {
+        return Input.GetMouseButtonDown(1);
     }
 }
