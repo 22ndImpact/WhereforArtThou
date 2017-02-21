@@ -110,6 +110,8 @@ public class Scr_Ctrl_Player : MonoBehaviour
     {
         lifeState = Scr_Ctrl_Player.LifeState.Dead;
         Debug.Log("You Died");
+        Scr_GameDirector.inst.LoadScene("Sce_GameOver");
+
     }
 
 

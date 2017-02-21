@@ -7,28 +7,37 @@ public class Scr_Ctrl_Level : MonoBehaviour
 
     Vector2 levelBoundary;
 
+    public int enemiesAlive;
+
+    public List<Scr_Ctrl_Enemy> enemyList;
+
     int difficulty;
 
-    int enemiesToSpawn = 10;
+    int enemiesToSpawnBase = 5;
+    int enemiesToSpawn;
 
     public GameObject enemyPrefab;
 
-
-
-	// Use this for initialization
-	void Start ()
+    public void Awake()
     {
-	}
-	
-	// Update is called once per frame
-	void Update ()
+        Scr_GameDirector.inst.currentLevel = this;
+    }
+
+    public void UpdateCUrrentEnemies(int _enemyChange)
     {
-		
-	}
+        enemiesAlive += _enemyChange;
+
+        if(enemiesAlive <= 0)
+        {
+            Scr_GameDirector.inst.CompleteLevel();
+        }
+    }
 
     public void Initialization(int _difficulty, Vector2 _levelBoundary)
     {
+
         difficulty = _difficulty;
+        enemiesToSpawn = enemiesToSpawnBase + difficulty;
         levelBoundary = _levelBoundary;
         GenerateEnemies();
     }
@@ -52,7 +61,6 @@ public class Scr_Ctrl_Level : MonoBehaviour
 
             if (!Physics.Raycast(ray, out hitInfo))
             {
-                Debug.Log(attemptedSpawnLocation);
                 SpawnEnemy(attemptedSpawnLocation);
                 enemyCounter += 1;
             }
@@ -65,19 +73,21 @@ public class Scr_Ctrl_Level : MonoBehaviour
     {
         spawnLocation.y = 0;
 
+        GameObject newEnemy = (GameObject) Instantiate(enemyPrefab);
+        
         if (Random.Range(0, 2) == 0)
         {
-            GameObject newEnemy = Instantiate(enemyPrefab);
-            newEnemy.transform.position = spawnLocation;
             enemyPrefab.GetComponent<Scr_Ctrl_Enemy>().Initialize(Scr_Ctrl_Player.Polarity.Blue);
         }
         else
         {
-            GameObject newEnemy = Instantiate(enemyPrefab);
-            newEnemy.transform.position = spawnLocation;
             enemyPrefab.GetComponent<Scr_Ctrl_Enemy>().Initialize(Scr_Ctrl_Player.Polarity.Pink);
         }
 
+        enemiesAlive = enemyList.Count;
 
+
+
+        newEnemy.transform.position = spawnLocation;
     }
 }

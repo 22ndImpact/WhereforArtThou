@@ -36,6 +36,8 @@ public class Scr_Ctrl_Projectile : MonoBehaviour
 
     void Awake()
     {
+        transform.parent = Scr_GameDirector.inst.currentLevel.gameObject.transform;
+
         projHeadRenderer = projectileHead.GetComponent<MeshRenderer>();
 
         projTrailTransform = projectileTrail.transform;

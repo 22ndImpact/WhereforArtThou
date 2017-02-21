@@ -40,6 +40,8 @@ public class Scr_Ctrl_Enemy : MonoBehaviour
 
     public GameObject projectilePrefab;
 
+    public Scr_Ctrl_Level currentLevel;
+
 	// Use this for initialization
 	void Start ()
     {
@@ -52,6 +54,12 @@ public class Scr_Ctrl_Enemy : MonoBehaviour
     {
         UpdateMovement();
         UpdateStateTimers();
+
+        if(currentLevel == null)
+        {
+            //For  some reason the first enemy created ni the loop wouldnt register the current level, dirty fix bois
+            currentLevel = Scr_GameDirector.inst.currentLevel;
+        }
     }
 
     void UpdateStateTimers()
@@ -137,6 +145,13 @@ public class Scr_Ctrl_Enemy : MonoBehaviour
 
     public void Initialize(Scr_Ctrl_Player.Polarity _polarity)
     {
+
+        Debug.Log(currentLevel);
+
+        currentLevel = Scr_GameDirector.inst.currentLevel;
+
+        currentLevel.enemyList.Add(this);
+
         shootTimer = Random.Range(shootTimerMin, shootTimerMax);
 
         lifeState = Scr_Ctrl_Player.LifeState.Alive;
@@ -162,8 +177,8 @@ public class Scr_Ctrl_Enemy : MonoBehaviour
 
     public void Die()
     {
+        currentLevel.UpdateCUrrentEnemies(-1);
         lifeState = Scr_Ctrl_Player.LifeState.Dead;
-        Debug.Log("Enemy Died");
         Destroy(this.gameObject);
     }
 

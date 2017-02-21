@@ -76,6 +76,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Controllers\Enemy\Scr_Ctrl_Enemy.cs" />
+    <Compile Include="Assets\Scripts\Controllers\Global\Scr_Ctrl_Scene.cs" />
+    <Compile Include="Assets\Scripts\Controllers\Global\Scr_GameDirector.cs" />
     <Compile Include="Assets\Scripts\Controllers\Level\Scr_Ctrl_Level.cs" />
     <Compile Include="Assets\Scripts\Controllers\Player\Scr_Ctrl_Player.cs" />
     <Compile Include="Assets\Scripts\Controllers\Player\Scr_Ctrl_Player_Collisions.cs" />
@@ -86,7 +88,7 @@
     <Compile Include="Assets\Scripts\Controllers\Projectile\Scr_Ctrl_Projectile.cs" />
     <Compile Include="Assets\Scripts\Controllers\Projectile\Scr_Ctrl_ProjectileHead.cs" />
     <Compile Include="Assets\Scripts\Controllers\Projectile\Scr_Ctrl_ProjectileTrail.cs" />
-    <Compile Include="Assets\Scripts\Controllers\Scr_GameDirector.cs" />
+    <Compile Include="Assets\Scripts\Controllers\UI\Scr_Button_Start.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>
